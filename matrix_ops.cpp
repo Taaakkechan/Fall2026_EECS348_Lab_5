@@ -1,26 +1,28 @@
 // matrix_ops.cpp - basic matrix operations on N x N matrices read from a file
-#include <algorithm>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <algorithm> // used for max() and swap()
+#include <fstream> // this one is for reading characters off input file
+#include <iomanip> // used for setw() in the columnWidth()
+#include <iostream> // input/output
+#include <string> // to_string() conversion
+#include <vector> // vector used for vector type
 
 using namespace std;
 
-typedef vector<vector<int> > Matrix;
+typedef vector<vector<int> > Matrix; // define 2D matrix of integers
 
 // Column width: at least 4 (matches the sample output), wider if values need it.
+// This function is for styling and is not nessesary for the assignment
 static int columnWidth(const Matrix &m) {
     size_t maxLen = 0;
+    // Loops through all the values of the matricies to find the biggest one.
     for (size_t i = 0; i < m.size(); i++)
         for (size_t j = 0; j < m[i].size(); j++)
             maxLen = max(maxLen, to_string(m[i][j]).size());
-    return static_cast<int>(max<size_t>(4, maxLen + 1));
+    return static_cast<int>(max<size_t>(4, maxLen + 1)); // type casts to int and return value. Adds 1 to width so there is space between numbers.
 }
 
 void printMatrix(const Matrix &m) {
-    int w = columnWidth(m);
+    int w = columnWidth(m); // defines the size of each block of matrix
     for (size_t i = 0; i < m.size(); i++) {
         for (size_t j = 0; j < m[i].size(); j++)
             cout << setw(w) << m[i][j];
@@ -31,15 +33,15 @@ void printMatrix(const Matrix &m) {
 // 1. Load N, then two N x N matrices, from a file.
 bool loadMatrices(const string &filename, int &n, Matrix &a, Matrix &b) {
     ifstream in(filename.c_str());
-    if (!in) {
+    if (!in) { //reading fails
         cerr << "Error: cannot open file '" << filename << "'\n";
         return false;
     }
-    if (!(in >> n) || n <= 0) {
+    if (!(in >> n) || n <= 0) { //invalid format of first line. in >> n tries to load to int n.
         cerr << "Error: first line must be a positive integer N\n";
         return false;
     }
-    // creates empty matricies with 0 to be filled later
+    // creates empty matricies so we can fill later
     a.assign(n, vector<int>(n)); 
     b.assign(n, vector<int>(n));
     for (int i = 0; i < n; i++)
@@ -114,6 +116,7 @@ bool updateElement(Matrix &m, int row, int col, int value) {
 }
 
 int main() {
+    // intake filename
     string filename;
     cout << "Enter input filename: ";
     getline(cin, filename);
